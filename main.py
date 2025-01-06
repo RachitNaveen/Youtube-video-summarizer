@@ -16,11 +16,17 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-# Function to summarize text
-def summarize_text(text, max_length=50000):
-    summarization_pipeline = pipeline("summarization")
-    summary = summarization_pipeline(text, max_length=max_length, min_length=50, do_sample=False)
-    return summary[0]['summary_text']
+
+# Updated summarize_text to handle chunking
+def summarize_text(text, max_length=500):
+    chunk_size = 1024
+    chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+    summaries = []
+    for chunk in chunks:
+        summary = summarization_pipeline(chunk, max_length=max_length, min_length=50, do_sample=False)
+        summaries.append(summary[0]['summary_text'])
+    return ' '.join(summaries)
+
 
 # Function to extract keywords
 def extract_keywords(text):
@@ -72,7 +78,7 @@ def main():
     video_url = st.text_input("Enter YouTube Video URL:", "")
 
     # User customization options
-    max_summary_length = st.slider("Max Summary Length:", 1000, 20000, 50000)
+    max_summary_length = st.slider("Max Summary Length:", 50, 1000, 200)
 
     if st.button("Summarize"):
         try:
@@ -124,5 +130,6 @@ def main():
         except Exception as e:
             st.error(f"Error: {str(e)}")
 
-if __name__ == "_main_":
+# Adjust main Streamlit run condition
+if __name__ == "__main__":
     main()
