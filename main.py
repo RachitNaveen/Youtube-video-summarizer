@@ -9,6 +9,7 @@ from transformers import pipeline
 from textblob import TextBlob
 import re
 import nltk
+summarization_pipeline = pipeline("summarization", model="facebook/bart-large-cnn")
 
 # Ensure that necessary NLTK data is downloaded
 nltk.download('punkt')
